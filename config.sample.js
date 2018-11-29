@@ -35,7 +35,7 @@ module.exports = {
   thirdPartyConfigs: {
 
     //service name, one word only, such as Insightly, RedTailCRM...
-    serviceName: 'RedtailCRM',
+    serviceName: 'custom',
 
     //show call log sync form or not
     showCallLogSyncForm: true
