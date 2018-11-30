@@ -10,6 +10,7 @@
 /dist/content.js*
 /dist/background.js*
 /dist/images
+/dist/app.*
 package-lock.json
 /config.js
 
