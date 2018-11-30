@@ -8,6 +8,17 @@ import _ from 'lodash'
 let standaloneWindow
 let activeTabIds = new Set()
 
+/**
+ * check should show active icon for tab
+ * @param {*} tab
+ */
+function checkTab(tab) {
+  return tab &&
+    tab.url && true
+  // todo check url to match your CRM site url
+  // tab.url.includes('redtailtechnology.com')
+}
+
 function getDisplayInfo() {
   return new Promise(resolve => {
     chrome.system.display.getInfo(resolve)
@@ -85,12 +96,6 @@ async function sendMsgToContent(data) {
     res[id] = response
   }
   return res
-}
-
-function checkTab(tab) {
-  return tab &&
-    tab.url &&
-    tab.url.includes('redtailtechnology.com')
 }
 
 function getTabFromId(id) {

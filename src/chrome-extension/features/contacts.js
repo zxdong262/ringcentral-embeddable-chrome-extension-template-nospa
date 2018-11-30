@@ -19,7 +19,6 @@ let {
 } = thirdPartyConfigs
 //let syncHanlder = null
 
-
 function hideSyncTip() {
   document
     .querySelector('.rc-sync-contact-button-wrap')
@@ -50,6 +49,9 @@ function onClickContactPanel (e) {
   }
 }
 
+/**
+ * conatct info iframe loaded event
+ */
 function onloadIframe () {
   let dom = document
     .querySelector('.rc-contact-panel')
@@ -125,9 +127,11 @@ export function searchContacts(contacts = [], keyword) {
   })
 }
 
-
 /**
- * get contact lists
+ * get contact lists function
+ * todo: this function need you find out how to do it
+ * you may check the CRM site to find the right api to do it
+ * or CRM site supply with special api for it
  */
 export const getContacts = _.debounce(async function getContacts() {
   if (!window.rc.rcLogined) {
@@ -167,7 +171,8 @@ export function hideContactInfoPanel() {
 
 /**
  * show caller/callee info
- * todo: set right conatct url
+ * todo: you need find out right url for conact to show it when calling
+ * you may check the CRM site to find the right api to do it
  * @param {Object} call
  */
 export async function showContactInfoPanel(call) {

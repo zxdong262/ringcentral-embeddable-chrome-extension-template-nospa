@@ -21,8 +21,7 @@ import {
   showAuthBtn,
   unAuth,
   renderAuthButton,
-  notifyRCAuthed,
-  lsKeys
+  notifyRCAuthed
 } from './auth'
 import * as ls from '../common/ls'
 import _ from 'lodash'
@@ -36,13 +35,40 @@ import {
 } from './contacts'
 import {showActivityDetail, getActivities} from './activities'
 import {syncCallLogToThirdParty} from './call-log-sync'
-
+import {
+  sendMsgToBackground
+} from '../common/helpers'
+import {getUserId} from '../config'
 
 let {
   serviceName
 } = thirdPartyConfigs
 
-let authEventInited = false
+const lsKeys = {
+  apiKeyLSKey: 'rcapikey'
+}
+
+window.rc = {
+  local: {
+    apiKey: null
+  },
+  postMessage: data => {
+    sendMsgToBackground({
+      to: 'standalone',
+      data
+    })
+  },
+  currentUserId: '',
+  cacheKey: 'contacts' + '_' + '',
+  updateToken: async function (newToken, type = 'apiKey') {
+    window.rc.local[type] = newToken
+    let key = lsKeys[`${type}LSKey`]
+    await ls.set(key, newToken)
+  }
+
+}
+
+
 
 /**
  * handle ringcentral widgets contacts list events
@@ -179,24 +205,27 @@ function initRCEvent() {
     }
   }
   window.rc.postMessage(data)
-  if (window.rc.local.apiKey) {
-    notifyRCAuthed()
-  }
 }
 
 export default async function initThirdPartyApi () {
-  if (authEventInited) {
-    return
-  }
-  authEventInited = true
+
+  // init
+  let userId = getUserId()
+  window.rc.currentUserId = userId
+  window.rc.cacheKey = 'contacts' + '_' + userId,
   window.addEventListener('message', handleRCEvents)
-  //hanlde contacts events
+
+  // try to get api key from chrome storage
   let apiKey = await ls.get(lsKeys.apiKeyLSKey) || ''
   window.rc.local = {
     apiKey
   }
+
   //get the html ready
   renderAuthButton()
   renderConfirmGetContactsButton()
 
+  if (window.rc.local.apiKey) {
+    notifyRCAuthed()
+  }
 }

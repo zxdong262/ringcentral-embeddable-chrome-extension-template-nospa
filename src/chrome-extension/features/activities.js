@@ -36,6 +36,7 @@ export function showActivityDetail(body) {
 /**
  * todo
  * method to get contact activities from CRM site
+ * check CRM site to find out how to do this
  * @param {*} body
  */
 export async function getActivities(body) {

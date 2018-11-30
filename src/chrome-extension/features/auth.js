@@ -6,52 +6,37 @@ import {thirdPartyConfigs} from '../common/app-config'
 import logo from '../common/rc-logo'
 import {
   createElementFromHTML,
-  findParentBySel,
-  APIKEYLS,
-  sendMsgToBackground
+  findParentBySel
 } from '../common/helpers'
-import {
-  getUserId
-} from '../config'
 import * as ls from '../common/ls'
-let currentUserId = getUserId()
+
 let {
   serviceName
 } = thirdPartyConfigs
 
-export let lsKeys = {
-  apiKeyLSKey: APIKEYLS
-}
-window.rc = {
-  local: {
-    apiKey: null
-  },
-  postMessage: data => {
-    sendMsgToBackground({
-      to: 'standalone',
-      data
-    })
-  },
-  currentUserId,
-  cacheKey: 'contacts' + '_' + currentUserId
-}
-
-export async function updateToken(newToken, type = 'apiKey') {
-  window.rc.local[type] = newToken
-  let key = lsKeys[`${type}LSKey`]
-  await ls.set(key, newToken)
-}
-
+/**
+ * when user click close auth button or
+ * user start auth process, hide auth button
+ */
 function hideAuthBtn() {
   let dom = document.querySelector('.rc-auth-button-wrap')
   dom && dom.classList.add('rc-hide-to-side')
 }
 
+/**
+ * when user click contacts in ringcentral widgets or
+ * try to get third party contacts,
+ * need show auth button to user
+ */
 export function showAuthBtn() {
   let dom = document.querySelector('.rc-auth-button-wrap')
   dom && dom.classList.remove('rc-hide-to-side')
 }
 
+/**
+ * hanle user click auth button
+ * @param {*} e
+ */
 function handleAuthClick(e) {
   let {target} = e
   let {classList}= target
@@ -71,12 +56,16 @@ async function doAuth() {
   if (window.rc.local.apiKey) {
     return
   }
-  updateToken('true')
+  window.rc.updateToken('true')
   notifyRCAuthed()
   hideAuthBtn()
   //await do other auth work()
 }
 
+/**
+ * notify ringcentral widgets about auth status
+ * @param {} authorized
+ */
 export function notifyRCAuthed(authorized = true) {
   window.rc.postMessage({
     type: 'rc-adapter-update-authorization-status',
@@ -84,8 +73,11 @@ export function notifyRCAuthed(authorized = true) {
   }, '*')
 }
 
+/**
+ * when user click unauth button from ringcentral widgets
+ */
 export async function unAuth() {
-  await updateToken('')
+  await window.rc.updateToken('')
   notifyRCAuthed(false)
 }
 

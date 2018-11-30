@@ -4,6 +4,6 @@
  * content.js for chrome extension
  */
 
-import main from './common/init'
+import main from './init'
 
 window.addEventListener('load', main)
