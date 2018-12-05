@@ -1,6 +1,6 @@
 /**
  * make phone number text to tel link and click-to-dial
- * config proper selector in '../config.js', it will be done
+ * config proper selector in './config.js', it will be done
  * but still, you can add custom behaviors if the config does not meet your needs
  */
 
@@ -37,11 +37,19 @@ class LinkHandler {
   }
 
   handleText = (node) => {
-    if (node.querySelector('.rc-click-to-call')) {
+    if (node.querySelector('.rc-click-to-call') || node.classList.contains('rc-click-to-call')) {
       return
     }
     let txt = (node.textContent || '').trim()
     if (!checkPhoneNumber(txt)) {
+      return
+    }
+    if (node.tagName === 'A') {
+      node.classList.add('rc-click-to-call')
+      node.onclick = e => {
+        e.preventDefault()
+        callWithRingCentral(txt)
+      }
       return
     }
     while (node.firstChild) {
