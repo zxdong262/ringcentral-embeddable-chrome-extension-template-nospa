@@ -67,7 +67,11 @@ class insertHandler {
     if (this.isButtonInserted()) {
       return
     }
-    let callWithRingCentralBtn = document.querySelector('.' + RCBTNCLS2)
+    let parent = this.getParentDom().elem
+    if (!parent) {
+      return
+    }
+    let callWithRingCentralBtn = parent.querySelector('.' + RCBTNCLS2)
     if (callWithRingCentralBtn) {
       return
     }
