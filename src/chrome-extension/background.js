@@ -191,13 +191,8 @@ chrome.windows.onRemoved.addListener(function (id) {
 })
 
 chrome.windows.onFocusChanged.addListener(function (id) {
-  if (standaloneWindow && standaloneWindow.id !== id) {
-    console.log(standaloneWindow)
-    sendMsgToContent({
-      action: 'widgets-window-state-notify',
-      widgetsFocused: false
-    })
-  }
+  sendMsgToContent({
+    action: 'widgets-window-state-notify',
+    widgetsFocused: !(standaloneWindow && standaloneWindow.id !== id)
+  })
 })
-
-
